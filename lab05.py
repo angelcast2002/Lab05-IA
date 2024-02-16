@@ -111,21 +111,7 @@ class GraphSearch:
                 if (x, y) in explorados:
                     img.putpixel((x, y), (0, 0, 255))
                 else:
-                    img.putpixel((x, y), self.problem.matrix.get(y).get(x))
-        """img = Image.open("Test.bmp")
-        img = img.resize((len(self.problem.matrix.get(0)), len(self.problem.matrix)))
-        pixels = img.load()
-
-
-        for y in range(len(self.problem.matrix)):
-            for x in range(len(self.problem.matrix.get(y))):
-                if (x, y) in explorados:
-                    if (y, x) == estadoAceptado:
-                        pixels[x, y] = (0, 255, 255)
-                    else:
-                        pass
-                        pixels[x, y] = (0, 0, 255)"""
-        
+                    img.putpixel((x, y), self.problem.matrix.get(y).get(x))        
         img.save(path)
 
     def bfs(self):
