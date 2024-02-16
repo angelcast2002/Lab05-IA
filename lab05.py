@@ -111,7 +111,8 @@ class GraphSearch:
                 if (x, y) in explorados:
                     img.putpixel((x, y), (0, 0, 255))
                 else:
-                    img.putpixel((x, y), self.problem.matrix.get(y).get(x))        
+                    img.putpixel((x, y), self.problem.matrix.get(y).get(x))
+                            
         img.save(path)
 
     def bfs(self):
