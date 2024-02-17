@@ -3,7 +3,6 @@ from collections import defaultdict
 from abc import ABC, abstractmethod
 from queue import Queue
 from collections import deque
-import heapq
 import math
 from abc import ABC, abstractmethod
 
@@ -194,8 +193,8 @@ def getColores(path, reductor = 10):
 
     fila = 0
     columna = 0
-    for y in range(0, alto, reductor):
-        for x in range(0, ancho, reductor):
+    for y in range(10, alto, reductor):
+        for x in range(10, ancho, reductor):
             r, g, b = img_rgb.getpixel((x, y))
             rgb = (r, g, b)
             r, g, b = getSimilitud(rgb)
@@ -207,7 +206,7 @@ def getColores(path, reductor = 10):
     return coloresPorPixel
 
 if __name__ == "__main__":
-    reductor = 15
+    reductor = 4
     coloresPorPixel = getColores("Test.bmp", reductor)
     laberinto = Laberinto(coloresPorPixel)
     graphSearch = GraphSearch(laberinto)
