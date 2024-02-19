@@ -1,7 +1,7 @@
 from PIL import Image
 from collections import defaultdict
 from abc import ABC, abstractmethod
-from queue import Queue
+from queue import PriorityQueue, Queue
 from collections import deque
 import math
 from abc import ABC, abstractmethod
@@ -51,6 +51,10 @@ class Laberinto(ProblemFramework):
     def __init__(self, matrix):
         super().__init__(matrix)
 
+    def step_cost(self, state, action, next_state):
+    # Aquí define el costo de moverse de un estado a otro. Ejemplo:
+        return 1  # Costo constante para cada movimiento.
+
     def actions(self, state):
         x, y = state
 
@@ -73,10 +77,8 @@ class Laberinto(ProblemFramework):
             acciones.append("RIGHT")
         
         return acciones
-    
-    def step_cost(self, state, action, next_state):
-        return 1
-    
+
+        
     def goal_test(self, state):
         return self.matrix.get(state[1]).get(state[0]) == (0, 255, 0)
 
@@ -155,10 +157,64 @@ class GraphSearch:
                     frontera.append(siguienteEstado)
 
         return None
+    
+    def manhattan_distance(self, actual, objetivo):
+        return abs(actual[0] - objetivo[0]) + abs(actual[1] - objetivo[1])
+    
+    def euclidean_distance(self, actual, objetivo):
+        return math.sqrt((actual[0] - objetivo[0]) ** 2 + (actual[1] - objetivo[1]) ** 2)
 
-    def a_star(self, heuristic):
-        pass
+    def find_goal_state(self):
+        for y in self.problem.matrix:
+            for x in self.problem.matrix[y]:
+                if self.problem.matrix[y][x] == (0, 255, 0):  # Color verde
+                    return (x, y)
+        return None
 
+    def reconstruir_camino(self, estado_actual, mapa):
+        camino = []
+        while estado_actual is not None:
+            camino.append(estado_actual)
+            estado_actual = mapa[estado_actual[1]][estado_actual[0]]['parent']
+        return camino[::-1]  # Invierte el camino para ir del inicio al final
+    
+    def step_cost(state, action, next_state):
+            return 1
+
+    def a_star(self):        
+        estado_final = self.find_goal_state()
+        estado_inicial = self.problem.initial_state()
+
+        frontera = PriorityQueue()
+        mapa = defaultdict(lambda: defaultdict(lambda: {'color': (255, 255, 255), 'G': float('inf'), 'H': 0, 'F': float('inf'), 'parent': None}))
+        for y in self.problem.matrix:
+            for x in self.problem.matrix[y]:
+                mapa[y][x]['color'] = self.problem.matrix[y][x]
+
+        mapa[estado_inicial[1]][estado_inicial[0]]['G'] = 0
+        mapa[estado_inicial[1]][estado_inicial[0]]['H'] = self.manhattan_distance(estado_inicial, estado_final)
+        mapa[estado_inicial[1]][estado_inicial[0]]['F'] = mapa[estado_inicial[1]][estado_inicial[0]]['G'] + mapa[estado_inicial[1]][estado_inicial[0]]['H']
+        frontera.put((mapa[estado_inicial[1]][estado_inicial[0]]['F'], estado_inicial))
+
+        while not frontera.empty():
+            _, estado_actual = frontera.get()
+            if estado_actual == estado_final:
+                return self.reconstruir_camino(estado_actual, mapa)
+
+            for accion in self.problem.actions(estado_actual):
+                x, y = estado_actual
+                siguiente_estado = self.problem.result(estado_actual, accion)
+                nuevo_g = mapa[y][x]['G'] + self.problem.step_cost(estado_actual, accion, siguiente_estado)
+
+                if nuevo_g < mapa[siguiente_estado[1]][siguiente_estado[0]]['G']:
+                    mapa[siguiente_estado[1]][siguiente_estado[0]]['G'] = nuevo_g
+                    mapa[siguiente_estado[1]][siguiente_estado[0]]['H'] = self.manhattan_distance(siguiente_estado, estado_final)
+                    mapa[siguiente_estado[1]][siguiente_estado[0]]['F'] = mapa[siguiente_estado[1]][siguiente_estado[0]]['G'] + mapa[siguiente_estado[1]][siguiente_estado[0]]['H']
+                    mapa[siguiente_estado[1]][siguiente_estado[0]]['parent'] = estado_actual
+                    frontera.put((mapa[siguiente_estado[1]][siguiente_estado[0]]['F'], siguiente_estado))
+
+
+    
 def distanciaEuclidiana(color1, color2):
     return math.sqrt(sum([(a - b) ** 2 for a, b in zip(color1, color2)]))
 
@@ -210,7 +266,19 @@ if __name__ == "__main__":
     coloresPorPixel = getColores("Test.bmp", reductor)
     laberinto = Laberinto(coloresPorPixel)
     graphSearch = GraphSearch(laberinto)
+    '''
     solucion_bfs = graphSearch.bfs()
     print(solucion_bfs)
     solucion_dfs = graphSearch.dfs()
     print(solucion_dfs)
+    '''
+
+    # Aquí ejecutas A* y guardas la solución
+    solucion_a_star = graphSearch.a_star()
+    print("Solución A* encontrada:", solucion_a_star)
+    
+    # Dibuja el camino encontrado por A* en la imagen
+    if solucion_a_star:
+        explorados = set(solucion_a_star)  # Suponiendo que solucion_a_star es una lista de estados (x, y)
+        graphSearch.printNewBMP(explorados, "AStarSolution.bmp", solucion_a_star[-1])
+        print("Imagen con el camino de A* guardada como 'AStarSolution.bmp'")
