@@ -192,8 +192,14 @@ class GraphSearch:
                 mapa[y][x]['color'] = self.problem.matrix[y][x]
 
         mapa[estado_inicial[1]][estado_inicial[0]]['G'] = 0
-        #mapa[estado_inicial[1]][estado_inicial[0]]['H'] = self.manhattan_distance(estado_inicial, estado_final)
-        mapa[estado_inicial[1]][estado_inicial[0]]['H'] = self.euclidean_distance(estado_inicial, estado_final)
+        mapa[estado_inicial[1]][estado_inicial[0]]['H'] = self.manhattan_distance(estado_inicial, estado_final)
+        #mapa[estado_inicial[1]][estado_inicial[0]]['H'] = self.euclidean_distance(estado_inicial, estado_final)
+
+        # Tanto manhattan como euclidean distance son heurísticas admisibles para este tipo de problemas, que están en 2D, ya que ambos proporcionan una 
+        # estimación del costo restante para llegar al estado final. La distancia de Manhattan es la suma de las diferencias absolutas de las coordenadas
+        # de los dos puntos, mientras que la distancia euclidiana es la raíz cuadrada de la suma de los cuadrados de las diferencias de las coordenadas de
+        # los dos puntos. Ambas distancias son admisibles porque nunca sobreestiman el costo restante para llegar al estado final.
+
         mapa[estado_inicial[1]][estado_inicial[0]]['F'] = mapa[estado_inicial[1]][estado_inicial[0]]['G'] + mapa[estado_inicial[1]][estado_inicial[0]]['H']
         frontera.put((mapa[estado_inicial[1]][estado_inicial[0]]['F'], estado_inicial))
 
