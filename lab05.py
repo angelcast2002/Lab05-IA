@@ -273,11 +273,11 @@ def getColores(path, reductor = 10):
     return coloresPorPixel
 
 if __name__ == "__main__":
-    reductor = 4
-    coloresPorPixel = getColores("Test.bmp", reductor)
+    reductor = 2
+    #coloresPorPixel = getColores("Test.bmp", reductor)
     #coloresPorPixel = getColores("Test2.bmp", reductor)
-    #coloresPorPixel = getColores("TestSolution.bmp", reductor)
-    #coloresPorPixel = getColores("turing.bmp", reductor)
+    #coloresPorPixel = getColores("pruebalab1.bmp", reductor)
+    coloresPorPixel = getColores("turing.bmp", reductor)
     laberinto = Laberinto(coloresPorPixel)
     graphSearch = GraphSearch(laberinto)
 
@@ -296,3 +296,5 @@ if __name__ == "__main__":
         explorados = set(solucion_a_star)  # Suponiendo que solucion_a_star es una lista de estados (x, y)
         graphSearch.printNewBMP(explorados, "AStarSolution.bmp", solucion_a_star[-1])
         print("Imagen con el camino de A* guardada como 'AStarSolution.bmp'")
+
+# Link del video: https://youtu.be/5kMb2-S6NyM
