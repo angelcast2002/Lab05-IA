@@ -192,13 +192,15 @@ class GraphSearch:
                 mapa[y][x]['color'] = self.problem.matrix[y][x]
 
         mapa[estado_inicial[1]][estado_inicial[0]]['G'] = 0
-        mapa[estado_inicial[1]][estado_inicial[0]]['H'] = self.manhattan_distance(estado_inicial, estado_final)
+        #mapa[estado_inicial[1]][estado_inicial[0]]['H'] = self.manhattan_distance(estado_inicial, estado_final)
+        mapa[estado_inicial[1]][estado_inicial[0]]['H'] = self.euclidean_distance(estado_inicial, estado_final)
         mapa[estado_inicial[1]][estado_inicial[0]]['F'] = mapa[estado_inicial[1]][estado_inicial[0]]['G'] + mapa[estado_inicial[1]][estado_inicial[0]]['H']
         frontera.put((mapa[estado_inicial[1]][estado_inicial[0]]['F'], estado_inicial))
 
         while not frontera.empty():
             _, estado_actual = frontera.get()
             if estado_actual == estado_final:
+                print("Estado final para a_star: ", estado_actual)
                 return self.reconstruir_camino(estado_actual, mapa)
 
             for accion in self.problem.actions(estado_actual):
@@ -266,16 +268,16 @@ if __name__ == "__main__":
     coloresPorPixel = getColores("Test.bmp", reductor)
     laberinto = Laberinto(coloresPorPixel)
     graphSearch = GraphSearch(laberinto)
-    '''
+
     solucion_bfs = graphSearch.bfs()
-    print(solucion_bfs)
+    print("Destino en bfs: ", solucion_bfs)
     solucion_dfs = graphSearch.dfs()
-    print(solucion_dfs)
-    '''
+    print("Destino en dfs: ", solucion_dfs)
+
 
     # Aquí ejecutas A* y guardas la solución
     solucion_a_star = graphSearch.a_star()
-    print("Solución A* encontrada:", solucion_a_star)
+    #print("Solución A* encontrada:", solucion_a_star)
     
     # Dibuja el camino encontrado por A* en la imagen
     if solucion_a_star:
