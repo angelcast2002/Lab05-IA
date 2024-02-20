@@ -298,3 +298,4 @@ if __name__ == "__main__":
         print("Imagen con el camino de A* guardada como 'AStarSolution.bmp'")
 
 # Link del video: https://youtu.be/5kMb2-S6NyM
+# Link del repo: https://github.com/angelcast2002/Lab05-IA
