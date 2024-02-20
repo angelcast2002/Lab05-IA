@@ -192,6 +192,7 @@ class GraphSearch:
                 mapa[y][x]['color'] = self.problem.matrix[y][x]
 
         mapa[estado_inicial[1]][estado_inicial[0]]['G'] = 0
+        # Seleccionar la heurística que se quiera usar
         mapa[estado_inicial[1]][estado_inicial[0]]['H'] = self.manhattan_distance(estado_inicial, estado_final)
         #mapa[estado_inicial[1]][estado_inicial[0]]['H'] = self.euclidean_distance(estado_inicial, estado_final)
 
@@ -216,7 +217,9 @@ class GraphSearch:
 
                 if nuevo_g < mapa[siguiente_estado[1]][siguiente_estado[0]]['G']:
                     mapa[siguiente_estado[1]][siguiente_estado[0]]['G'] = nuevo_g
+                    # Seleccionar la heurística que se quiera usar
                     mapa[siguiente_estado[1]][siguiente_estado[0]]['H'] = self.manhattan_distance(siguiente_estado, estado_final)
+                    #mapa[siguiente_estado[1]][siguiente_estado[0]]['H'] = self.euclidean_distance(siguiente_estado, estado_final)
                     mapa[siguiente_estado[1]][siguiente_estado[0]]['F'] = mapa[siguiente_estado[1]][siguiente_estado[0]]['G'] + mapa[siguiente_estado[1]][siguiente_estado[0]]['H']
                     mapa[siguiente_estado[1]][siguiente_estado[0]]['parent'] = estado_actual
                     frontera.put((mapa[siguiente_estado[1]][siguiente_estado[0]]['F'], siguiente_estado))
@@ -272,6 +275,9 @@ def getColores(path, reductor = 10):
 if __name__ == "__main__":
     reductor = 4
     coloresPorPixel = getColores("Test.bmp", reductor)
+    #coloresPorPixel = getColores("Test2.bmp", reductor)
+    #coloresPorPixel = getColores("TestSolution.bmp", reductor)
+    #coloresPorPixel = getColores("turing.bmp", reductor)
     laberinto = Laberinto(coloresPorPixel)
     graphSearch = GraphSearch(laberinto)
 
